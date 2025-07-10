@@ -74,9 +74,14 @@ func (b *InstalledBucket) List() ([]plugin_entities.PluginUniqueIdentifier, erro
 			continue
 		}
 		// remove prefix
-		identifier, err := plugin_entities.NewPluginUniqueIdentifier(
-			strings.TrimPrefix(path.Path, b.installedPath),
-		)
+		identifierStr := strings.TrimPrefix(path.Path, b.installedPath)
+		log.Error("identifier string: %s (%s, %s)", identifierStr, path.Path, b.installedPath)
+
+		if strings.HasPrefix(identifierStr, "/") {
+			identifierStr = strings.TrimPrefix(identifierStr, "/")
+		} 
+		
+		identifier, err := plugin_entities.NewPluginUniqueIdentifier(identifierStr)
 		if err != nil {
 			log.Error("failed to create PluginUniqueIdentifier from path %s: %v", path.Path, err)
 			continue
